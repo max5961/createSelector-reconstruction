@@ -6,19 +6,19 @@ export const createSelector = (
     selectors: ((state: any) => any)[],
     combiner: (...args: any[]) => any,
 ) => {
-    const last: { cache: any[]; value: any } = { cache: [], value: undefined };
+    const cache: { args: any[]; value: any } = { args: [], value: undefined };
 
     return (state: any) => {
-        const newCache = selectors.map((selector) => selector(state));
+        const newArgs = selectors.map((selector) => selector(state));
 
-        for (let i = 0; i < newCache.length; ++i) {
-            if (newCache[i] !== last.cache[i]) {
-                last.cache = newCache;
-                last.value = combiner(...last.cache);
+        for (let i = 0; i < newArgs.length; ++i) {
+            if (newArgs[i] !== cache.args[i]) {
+                cache.args = newArgs;
+                cache.value = combiner(...cache.args);
             }
         }
 
-        return last.value;
+        return cache.value;
     };
 };
 ```
